@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb-pmb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pmb
+      MYSQL_USER: pmbuser
+      MYSQL_PASSWORD: pmbpassword
+    volumes:
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+      - mariadb_data:/var/lib/mysql
+
+  pmb:
+    build: .
+    container_name: pmb
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+    volumes:
+      - pmb_data:/var/www/html
+
+volumes:
+  mariadb_data:
+  pmb_data:
